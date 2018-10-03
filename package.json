@@ -1,5 +1,5 @@
 {
-  "name": "can-autoplay",
+  "name": "@hmh/can-autoplay",
   "version": "3.0.1",
   "main": "build/can-autoplay.cjs.js",
   "module": "build/can-autoplay.es.js",
