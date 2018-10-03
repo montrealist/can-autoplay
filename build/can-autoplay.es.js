@@ -16,7 +16,7 @@ var VIDEO = new Blob([new Uint8Array([0, 0, 0, 28, 102, 116, 121, 112, 105, 115,
 function setupDefaultValues(options) {
   return Object.assign({
     muted: false,
-    timeout: 250,
+    timeout: 2500,
     inline: false
   }, options);
 }
@@ -33,6 +33,7 @@ function startPlayback(_ref, elementCallback) {
   var playResult = void 0;
   var timeoutId = void 0;
   var sendOutput = void 0;
+  var originalSource = void 0;
 
   element.muted = muted;
   if (muted === true) {
@@ -44,6 +45,7 @@ function startPlayback(_ref, elementCallback) {
     element.setAttribute('playsinline', 'playsinline');
   }
 
+  originalSource = element.src;
   element.src = source;
 
   return new Promise(function (resolve) {
@@ -60,11 +62,14 @@ function startPlayback(_ref, elementCallback) {
 
     if (playResult !== undefined) {
       playResult.then(function () {
-        return sendOutput(true);
+        element.src = originalSource;
+        sendOutput(true);
       }).catch(function (playError) {
-        return sendOutput(false, playError);
+        element.src = originalSource;
+        sendOutput(false, playError);
       });
     } else {
+      element.src = originalSource;
       sendOutput(true);
     }
   });
@@ -78,7 +83,7 @@ function video(options) {
   options = setupDefaultValues(options);
   return startPlayback(options, function () {
     return {
-      element: document.createElement('video'),
+      element: document.querySelector('video'),
       source: URL.createObjectURL(VIDEO)
     };
   });
@@ -88,7 +93,7 @@ function audio(options) {
   options = setupDefaultValues(options);
   return startPlayback(options, function () {
     return {
-      element: document.createElement('audio'),
+      element: document.querySelector('audio'),
       source: URL.createObjectURL(AUDIO)
     };
   });
